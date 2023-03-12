@@ -6,17 +6,20 @@
     <script>
 
       function GBPToPLN(gbpAmount, ratio) {
-        return gbpAmount * ratio;
+        return (gbpAmount * ratio).toFixed(2);
       }
 
       function PLNToGBP(plnAmount, ratio) {
-        return plnAmount / ratio;
+        return (plnAmount / ratio).toFixed(2);
       }
 
       function submitForm() {
-        const input1Value = parseFloat(document.getElementById("input1").value);
-        const input1 = document.getElementById("input1")
+        const input1Value = parseFloat(document.getElementById("input1").value).toFixed(2);
+        const input1 = document.getElementById("input1");
+        input1.value = input1Value;
+        const input2Value = parseFloat(document.getElementById("input2").value).toFixed(2);
         const input2 = document.getElementById("input2");
+        input2.value = input2Value;
 
          // Use fetch to call the API endpoint
         fetch(`http://api.nbp.pl/api/exchangerates/rates/c/gbp/?`)
@@ -28,11 +31,11 @@
             const output = document.getElementById("output");
             output.innerHTML = `<p>Bid: ${bid}, ask: ${ask}</p>`;
             // display the adequate value
-            if (input1Value === 0) {
+            if (input1.value === `0.00`) {
               input1.value = `${GBPToPLN(parseFloat(input2.value), bid)}`;
             }
             else {
-              input2.value = `${PLNToGBP(input1Value, ask)}`;
+              input2.value = `${PLNToGBP(parseFloat(input1.value), ask)}`;
             }
           })
           .catch((error) => {
@@ -45,12 +48,12 @@
       // change the input textbox's value to '0' when the other textbox is accessed
       function updateInput2() {
         const input2 = document.getElementById("input2");
-        input2.value = `0`;
+        input2.value = `0.00`;
       }
 
       function updateInput1() {
         const input1 = document.getElementById("input1");
-        input1.value = `0`;
+        input1.value = `0.00`;
       }
 
     </script>
