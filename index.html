@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="html">
+  <head>
+    <meta charset="utf-8" />
+    <title>Currency Exchange</title>
+    <script>
+
+      function GBPToPLN(gbpAmount, ratio) {
+        return gbpAmount * ratio;
+      }
+
+      function PLNToGBP(plnAmount, ratio) {
+        return plnAmount / ratio;
+      }
+
+      function submitForm() {
+        const input1Value = parseFloat(document.getElementById("input1").value);
+        const input1 = document.getElementById("input1")
+        const input2 = document.getElementById("input2");
+
+         // Use fetch to call the API endpoint
+        fetch(`http://api.nbp.pl/api/exchangerates/rates/c/gbp/?`)
+          .then((response) => response.json())
+          .then((data) => {
+            // Get the exchange ratios
+            const ask = parseFloat(data.rates[0].ask);
+            const bid = parseFloat(data.rates[0].bid);
+            const output = document.getElementById("output");
+            output.innerHTML = `<p>Bid: ${bid}, ask: ${ask}</p>`;
+            // display the adequate value
+            if (input1Value === 0) {
+              input1.value = `${GBPToPLN(parseFloat(input2.value), bid)}`;
+            }
+            else {
+              input2.value = `${PLNToGBP(input1Value, ask)}`;
+            }
+          })
+          .catch((error) => {
+            // Handle any errors that occur during the fetch
+            const output = document.getElementById("output");
+            output.innerHTML = `<p>Error: ${error}</p>`;
+          });
+      }
+
+      // change the input textbox's value to '0' when the other textbox is accessed
+      function updateInput2() {
+        const input2 = document.getElementById("input2");
+        input2.value = `0`;
+      }
+
+      function updateInput1() {
+        const input1 = document.getElementById("input1");
+        input1.value = `0`;
+      }
+
+    </script>
+  </head>
+  <body>
+    <form>
+      <label for="input1">PLN:</label>
+      <input
+        type="text"
+        id="input1"
+        name="input1"
+        onfocus="updateInput2()"
+      /><br />
+
+      <label for="input2">GBP:</label>
+      <input
+        type="text"
+        id="input2"
+        name="input2"
+        onfocus="updateInput1()"
+      /><br />
+
+      <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+
+    <div id="output"></div>
+  </body>
+</html>
